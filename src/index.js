@@ -28,7 +28,9 @@ async function onSearchForm(evt) {
 
   page = 1;
 
-  fetchImagesValue = await fetchImages(searchValue);
+  const images = await fetchImages(searchValue, page);
+  fetchImagesValue.push(...images.hits);
+  // fetchImagesValue = await fetchImages(searchValue);
 
   console.log(fetchImagesValue);
 
@@ -70,3 +72,9 @@ const lightbox = new SimpleLightbox('.gallery a', {
 });
 
 // * button back to top
+
+window.onscroll = function (ev) {
+  if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
+    fetchImages();
+  }
+};
