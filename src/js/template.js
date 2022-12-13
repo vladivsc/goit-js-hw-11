@@ -9,26 +9,28 @@ export function createGalleryItemsMarkup(images) {
         views,
         comments,
         downloads,
-      }) => `<a href="${largeImageURL}">
+      }) => `
   <div class="photo-card">
-  <img src="${webformatURL}" alt="" loading="lazy" width = '372';
-      height = '240'; />
+  <a href="${largeImageURL}">
+  <img src="${webformatURL}" alt="" loading="lazy" width = '380'
+      height = '280'/>
   <div class="info">
     <p class="info-item">
-      <b>Likes</b>${likes}
+      <b>Likes:</b> ${likes}
     </p>
     <p class="info-item">
-      <b>Views</b>${views}
+      <b>Views:</b> ${views}
     </p>
     <p class="info-item">
-      <b>Comments</b>${comments}
+      <b>Comments:</b> ${comments}
     </p>
     <p class="info-item">
-      <b>Downloads</b>${downloads}
+      <b>Downloads:</b> ${downloads}
     </p>
   </div>
+  </a>
 </div>
-</a>
+
 `
     )
     .join('');

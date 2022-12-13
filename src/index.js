@@ -14,6 +14,8 @@ const refs = {
 
 let page = 1;
 
+let fetchImagesValue = [];
+
 refs.searchForm.addEventListener('submit', onSearchForm);
 
 async function onSearchForm(evt) {
@@ -25,20 +27,27 @@ async function onSearchForm(evt) {
 
   page = 1;
 
-  const fetchImagesValue = await fetchImages(searchValue);
+  fetchImagesValue = await fetchImages(searchValue);
 
-  if (fetchImagesValue.length === 0) {
+  console.log(fetchImagesValue.hits);
+
+  if (fetchImagesValue.hits.length === 0) {
     Notiflix.Notify.failure(
       'Sorry, there are no images matching your search query. Please try again.'
     );
     refs.searchForm.reset();
+    refs.gallery.innerHTML = '';
     return;
   }
 
-  const createMarkup = createGalleryItemsMarkup(fetchImagesValue);
-  refs.gallery.innerHTML = createMarkup;
+  render();
 
-  console.log(fetchImagesValue);
+  lightbox.refresh();
+}
+
+function render() {
+  const createMarkup = createGalleryItemsMarkup(fetchImagesValue.hits);
+  refs.gallery.innerHTML = createMarkup;
 }
 
 const lightbox = new SimpleLightbox('.gallery a', {
