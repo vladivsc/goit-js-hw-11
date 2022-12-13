@@ -51,7 +51,7 @@ async function onSearchForm(evt) {
 
 function render(toAdd) {
   const createMarkup = createGalleryItemsMarkup(toAdd);
-  refs.gallery.innerHTML('beforeend', createMarkup);
+  refs.gallery.insertAdjacentHTML('beforeend', createMarkup);
 }
 
 async function smoothScroll() {
