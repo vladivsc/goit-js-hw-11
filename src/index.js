@@ -44,14 +44,14 @@ async function onSearchForm(evt) {
 
   Notiflix.Notify.success(`Hooray! We found ${images.total} images.`);
 
-  render();
+  render(images.hits);
 
   lightbox.refresh();
 }
 
-function render() {
-  const createMarkup = createGalleryItemsMarkup(fetchImagesValue);
-  refs.gallery.innerHTML = createMarkup;
+function render(toAdd) {
+  const createMarkup = createGalleryItemsMarkup(toAdd);
+  refs.gallery.innerHTML('beforeend', createMarkup);
 }
 
 async function smoothScroll() {
@@ -79,7 +79,7 @@ window.onscroll = async function (ev) {
 
     fetchImagesValue.push(images.hits);
 
-    render();
+    render(images.hits);
 
     lightbox.refresh();
   }
