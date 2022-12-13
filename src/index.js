@@ -70,10 +70,8 @@ const lightbox = new SimpleLightbox('.gallery a', {
   captionPosition: 'bottom',
 });
 
-// * button back to top
-
 window.onscroll = async function (ev) {
-  if (window.innerHeight + window.scrollY - 75 >= document.body.offsetHeight) {
+  if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
     page += 1;
     const images = await fetchImages(searchValue, page);
 
