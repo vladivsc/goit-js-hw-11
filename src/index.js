@@ -84,4 +84,4 @@ window.onscroll = debounce(async function (ev) {
 
     lightbox.refresh();
   }
-}, 3000);
+}, 300);
