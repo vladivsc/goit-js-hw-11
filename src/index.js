@@ -4,6 +4,7 @@ import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
 import { fetchImages } from './js/api';
 import { createGalleryItemsMarkup } from './js/template';
+import * as scroll from './js/scroll-to-top';
 
 const refs = {
   searchForm: document.querySelector('.search-form'),
@@ -29,7 +30,7 @@ async function onSearchForm(evt) {
 
   fetchImagesValue = await fetchImages(searchValue);
 
-  console.log(fetchImagesValue.hits);
+  console.log(fetchImagesValue);
 
   if (fetchImagesValue.hits.length === 0) {
     Notiflix.Notify.failure(
@@ -39,6 +40,8 @@ async function onSearchForm(evt) {
     refs.gallery.innerHTML = '';
     return;
   }
+
+  Notiflix.Notify.success(`Hooray! We found ${fetchImagesValue.total} images.`);
 
   render();
 
@@ -50,8 +53,20 @@ function render() {
   refs.gallery.innerHTML = createMarkup;
 }
 
+async function smoothScroll() {
+  const { height: cardHeight } =
+    refs.gallery.firstElementChild.getBoundingClientRect();
+
+  window.scrollBy({
+    top: cardHeight * 2,
+    behavior: 'smooth',
+  });
+}
+
 const lightbox = new SimpleLightbox('.gallery a', {
   captionsData: 'alt',
   captionDelay: 250,
   captionPosition: 'bottom',
 });
+
+// * button back to top

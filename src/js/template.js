@@ -12,7 +12,7 @@ export function createGalleryItemsMarkup(images) {
       }) => `
   <div class="photo-card">
   <a href="${largeImageURL}">
-  <img src="${webformatURL}" alt="" loading="lazy" width = '380'
+  <img src="${webformatURL}" alt="${tags}" loading="lazy" width = '380'
       height = '280'/>
   <div class="info">
     <p class="info-item">
