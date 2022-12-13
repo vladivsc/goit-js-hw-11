@@ -4,7 +4,9 @@ import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
 import { fetchImages } from './js/api';
 import { createGalleryItemsMarkup } from './js/template';
-import * as scroll from './js/scroll-to-top';
+import { scrollFunction } from './js/scroll-to-top';
+
+const debounce = require('lodash.debounce');
 
 const refs = {
   searchForm: document.querySelector('.search-form'),
@@ -70,7 +72,8 @@ const lightbox = new SimpleLightbox('.gallery a', {
   captionPosition: 'bottom',
 });
 
-window.onscroll = async function (ev) {
+window.onscroll = debounce(async function (ev) {
+  scrollFunction();
   if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
     page += 1;
     const images = await fetchImages(searchValue, page);
@@ -81,4 +84,4 @@ window.onscroll = async function (ev) {
 
     lightbox.refresh();
   }
-};
+}, 3000);
