@@ -15,16 +15,15 @@ const refs = {
 
 let page = 1;
 
-let fetchImagesValue = [];
+const fetchImagesValue = [];
+let searchValue = '';
 
 refs.searchForm.addEventListener('submit', onSearchForm);
 
 async function onSearchForm(evt) {
   evt.preventDefault();
 
-  const searchValue = evt.target.elements.searchQuery.value
-    .trim()
-    .toLowerCase();
+  searchValue = evt.target.elements.searchQuery.value.trim().toLowerCase();
 
   page = 1;
 
@@ -34,7 +33,7 @@ async function onSearchForm(evt) {
 
   console.log(fetchImagesValue);
 
-  if (fetchImagesValue.hits.length === 0) {
+  if (fetchImagesValue.length === 0) {
     Notiflix.Notify.failure(
       'Sorry, there are no images matching your search query. Please try again.'
     );
@@ -43,7 +42,7 @@ async function onSearchForm(evt) {
     return;
   }
 
-  Notiflix.Notify.success(`Hooray! We found ${fetchImagesValue.total} images.`);
+  Notiflix.Notify.success(`Hooray! We found ${images.total} images.`);
 
   render();
 
@@ -51,7 +50,7 @@ async function onSearchForm(evt) {
 }
 
 function render() {
-  const createMarkup = createGalleryItemsMarkup(fetchImagesValue.hits);
+  const createMarkup = createGalleryItemsMarkup(fetchImagesValue);
   refs.gallery.insertAdjacentHTML('afterbegin', createMarkup);
 }
 
@@ -73,8 +72,15 @@ const lightbox = new SimpleLightbox('.gallery a', {
 
 // * button back to top
 
-window.onscroll = function (ev) {
+window.onscroll = async function (ev) {
   if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
-    fetchImages();
+    page += 1;
+    const images = await fetchImages(searchValue, page);
+
+    fetchImagesValue.push(images.hits);
+
+    render();
+
+    lightbox.refresh();
   }
 };
