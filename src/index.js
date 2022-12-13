@@ -50,7 +50,7 @@ async function onSearchForm(evt) {
 
 function render() {
   const createMarkup = createGalleryItemsMarkup(fetchImagesValue.hits);
-  refs.gallery.innerHTML = createMarkup;
+  refs.gallery.insertAdjacentHTML('afterbegin', createMarkup);
 }
 
 async function smoothScroll() {
