@@ -5,25 +5,21 @@ import 'simplelightbox/dist/simple-lightbox.min.css';
 import { fetchImages } from './js/api';
 import { createGalleryItemsMarkup } from './js/template';
 import { scrollFunction } from './js/scroll-to-top';
+import { refs } from './js/reference';
 
 const debounce = require('lodash.debounce');
 
-const refs = {
-  searchForm: document.querySelector('.search-form'),
-  searchInput: document.querySelector('.search-input'),
-  searchBtn: document.querySelector('.submit-btn'),
-  gallery: document.querySelector('.gallery'),
-};
+refs.searchForm.addEventListener('submit', onSearchForm);
 
 let page = 1;
 
-const fetchImagesValue = [];
+let fetchImagesValue = [];
 let searchValue = '';
-
-refs.searchForm.addEventListener('submit', onSearchForm);
 
 async function onSearchForm(evt) {
   evt.preventDefault();
+  fetchImagesValue = [];
+  refs.gallery.innerHTML = '';
 
   searchValue = evt.target.elements.searchQuery.value.trim().toLowerCase();
 
@@ -31,9 +27,6 @@ async function onSearchForm(evt) {
 
   const images = await fetchImages(searchValue, page);
   fetchImagesValue.push(...images.hits);
-  // fetchImagesValue = await fetchImages(searchValue);
-
-  console.log(fetchImagesValue);
 
   if (fetchImagesValue.length === 0) {
     Notiflix.Notify.failure(
@@ -51,10 +44,31 @@ async function onSearchForm(evt) {
   lightbox.refresh();
 }
 
+window.onscroll = debounce(async function (ev) {
+  scrollFunction();
+  if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
+    page += 1;
+
+    const images = await fetchImages(searchValue, page);
+
+    fetchImagesValue.push(images.hits);
+
+    render(images.hits);
+
+    lightbox.refresh();
+  }
+}, 100);
+
 function render(toAdd) {
   const createMarkup = createGalleryItemsMarkup(toAdd);
   refs.gallery.insertAdjacentHTML('beforeend', createMarkup);
 }
+
+const lightbox = new SimpleLightbox('.gallery a', {
+  captionsData: 'alt',
+  captionDelay: 250,
+  captionPosition: 'bottom',
+});
 
 async function smoothScroll() {
   const { height: cardHeight } =
@@ -65,23 +79,3 @@ async function smoothScroll() {
     behavior: 'smooth',
   });
 }
-
-const lightbox = new SimpleLightbox('.gallery a', {
-  captionsData: 'alt',
-  captionDelay: 250,
-  captionPosition: 'bottom',
-});
-
-window.onscroll = debounce(async function (ev) {
-  scrollFunction();
-  if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
-    page += 1;
-    const images = await fetchImages(searchValue, page);
-
-    fetchImagesValue.push(images.hits);
-
-    render(images.hits);
-
-    lightbox.refresh();
-  }
-}, 300);
